@@ -1,6 +1,8 @@
 # 607-Studio-04---Exceptions-Tests-for-the-Bootstrap
 
-This is Siyuan Tang and Zhiheng Wei's repo for Studio 04, STATS 607 001 FA 2025. More descriptions about this studio can be found [here](https://github.com/siyuat-ui/607-Studio-04---Exceptions-Tests-for-the-Bootstrap/blob/main/Studio%2004%20-%20Exceptions%20%26%20Tests%20for%20the%20Bootstrap.pdf)
+This is Siyuan Tang and Ziheng Wei's repo for Studio 04, STATS 607 001 FA 2025. Descriptions about this studio can be found [here](https://github.com/siyuat-ui/607-Studio-04---Exceptions-Tests-for-the-Bootstrap/blob/main/Studio%2004%20-%20Exceptions%20%26%20Tests%20for%20the%20Bootstrap.pdf).
+
+Ziheng Wei is student A, who is responible for tests of bootstrap_ci and R_squared , and the implementation of bootstrap_sample. Siyuan Tang is student B, who is responsible for tests of bootstrap_sample , and the implementation of bootstrap_ci and R_squared. Both of them ran the tests, debugged, and added a statistical validation test that checks the bootstrap implementation against the known theoretical null distribution of R-squared.
 
 ## Quick start
 
