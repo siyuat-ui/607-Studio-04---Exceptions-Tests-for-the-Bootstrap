@@ -8,6 +8,7 @@ Strong linear model in regression
         R^2 ~ Beta(p/2, (n-p-1)/2)
 """
 
+import numpy as np
 
 def bootstrap_sample(X, y, compute_stat, n_bootstrap=1000):
     """
@@ -50,7 +51,9 @@ def bootstrap_ci(bootstrap_stats, alpha=0.05):
     
     ....
     """
-    pass
+    lower_bound = np.percentile(bootstrap_stats, 100 * (alpha / 2))
+    upper_bound = np.percentile(bootstrap_stats, 100 * (1 - alpha / 2))
+    return lower_bound, upper_bound
 
 def R_squared(X, y):
     """
@@ -72,4 +75,25 @@ def R_squared(X, y):
     ValueError
         If X.shape[0] != len(y)
     """
-    pass
+    X = np.asarray(X)
+    y = np.asarray(y)
+
+    if X.shape[0] != len(y):
+        raise ValueError("Number of rows in X must match length of y")
+    
+    # OLS estimate of coefficients: beta = (X^T X)^(-1) X^T y
+    beta = np.linalg.inv(X.T @ X) @ X.T @ y
+    
+    # Predicted values
+    y_hat = X @ beta
+    
+    # Total sum of squares
+    ss_total = np.sum((y - np.mean(y))**2)
+    
+    # Residual sum of squares
+    ss_res = np.sum((y - y_hat)**2)
+    
+    # R-squared
+    r2 = 1 - ss_res / ss_total
+    
+    return r2
