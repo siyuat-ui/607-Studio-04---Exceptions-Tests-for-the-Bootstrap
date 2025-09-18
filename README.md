@@ -13,7 +13,7 @@ Ziheng Wei is student A, who is responible for tests of bootstrap_ci and R_squar
 1. Clone the repo
 
 ```bash
-git clone hhttps://github.com/siyuat-ui/607-Studio-04---Exceptions-Tests-for-the-Bootstrap.git
+git clone https://github.com/siyuat-ui/607-Studio-04---Exceptions-Tests-for-the-Bootstrap.git
 cd 607-Studio-04---Exceptions-Tests-for-the-Bootstrap
 ```
 
