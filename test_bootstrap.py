@@ -13,28 +13,65 @@ def test_bootstrap_integration():
 # -----------------------------
 
 def test_bootstrap_sample_length():
-    """Check that bootstrap_sample returns the requested number of samples"""
+    """Happy path: returns correct number of bootstrap samples"""
     X = np.ones((5, 2))
     y = np.ones(5)
     n_bootstrap = 50
-    stats = bootstrap_sample(X, y, compute_stat=r_squared, n_bootstrap=n_bootstrap)
+    stats = bootstrap_sample(X, y, compute_stat=R_squared, n_bootstrap=n_bootstrap)
     assert len(stats) == n_bootstrap
 
 def test_bootstrap_sample_type():
-    """Check that bootstrap_sample returns a numpy array of floats"""
+    """Happy path: returns a numpy array of floats"""
     X = np.ones((5, 2))
     y = np.ones(5)
-    stats = bootstrap_sample(X, y, compute_stat=r_squared, n_bootstrap=10)
+    stats = bootstrap_sample(X, y, compute_stat=R_squared, n_bootstrap=10)
     assert isinstance(stats, np.ndarray)
     assert np.issubdtype(stats.dtype, np.floating)
 
 def test_bootstrap_sample_variation():
-    """Check that bootstrap_sample produces variation (unless data is constant)"""
+    """Happy path: bootstrap produces variation"""
     np.random.seed(0)
     X = np.column_stack((np.ones(10), np.arange(10)))
     y = X @ np.array([1, 2]) + np.random.randn(10) * 0.1
-    stats = bootstrap_sample(X, y, compute_stat=r_squared, n_bootstrap=100)
-    assert np.std(stats) > 0, "Bootstrap statistics should vary"
+    stats = bootstrap_sample(X, y, compute_stat=R_squared, n_bootstrap=100)
+    assert np.std(stats) > 0
+
+# ---------------------------
+# Edge cases
+# ---------------------------
+
+def test_bootstrap_sample_nbootstrap_one():
+    """Edge case: n_bootstrap=1 returns a single-element array"""
+    X = np.ones((5, 2))
+    y = np.ones(5)
+    stats = bootstrap_sample(X, y, compute_stat=R_squared, n_bootstrap=1)
+    assert len(stats) == 1
+
+def test_bootstrap_sample_single_row():
+    """Edge case: single-row X and y"""
+    X = np.array([[1, 2]])
+    y = np.array([5])
+    stats = bootstrap_sample(X, y, compute_stat=R_squared, n_bootstrap=5)
+    assert len(stats) == 5
+    assert np.all(np.isfinite(stats))
+
+def test_bootstrap_sample_single_column():
+    """Edge case: single predictor column (plus intercept)"""
+    X = np.column_stack((np.ones(5), np.arange(5)))
+    y = np.arange(5)
+    stats = bootstrap_sample(X, y, compute_stat=R_squared, n_bootstrap=10)
+    assert len(stats) == 10
+
+# ---------------------------
+# Invalid inputs
+# ---------------------------
+
+def test_bootstrap_sample_mismatched_X_y():
+    """Invalid input: X and y have different number of rows"""
+    X = np.ones((5, 2))
+    y = np.ones(4)
+    with pytest.raises(ValueError):
+        bootstrap_sample(X, y, compute_stat=R_squared, n_bootstrap=10)
 
 # -----------------------------
 # Bonus: Add a statistical validation test that checks the bootstrap implementation against the known theoretical distribution of R² under
@@ -70,7 +107,7 @@ def validate_bootstrap_r2(n=50, p=2, n_bootstrap=1000, alpha=0.05, random_state=
     y = np.random.randn(n)  # response under null
 
     # Compute bootstrap R²
-    boot_r2 = bootstrap_sample(X, y, compute_stat=r_squared, n_bootstrap=n_bootstrap)
+    boot_r2 = bootstrap_sample(X, y, compute_stat=R_squared, n_bootstrap=n_bootstrap)
 
     # Theoretical R² distribution under null: Beta(p/2, (n-p-1)/2)
     a = p / 2
