@@ -31,7 +31,25 @@ def bootstrap_sample(X, y, compute_stat, n_bootstrap=1000):
 
     ....
     """
-    pass
+    X = np.asarray(X)
+    y = np.asarray(y)
+    
+    if X.shape[0] != len(y):
+        raise ValueError("Number of rows in X must match length of y")
+    
+    n = len(y)
+    stats = np.empty(n_bootstrap, dtype=float)
+    
+    for i in range(n_bootstrap):
+        # Sample indices with replacement
+        idx = np.random.randint(0, n, size=n)
+        X_boot = X[idx]
+        y_boot = y[idx]
+        
+        # Compute statistic on bootstrap sample
+        stats[i] = compute_stat(X_boot, y_boot)
+    
+    return stats
 
 def bootstrap_ci(bootstrap_stats, alpha=0.05):
     """
