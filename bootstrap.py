@@ -99,8 +99,10 @@ def R_squared(X, y):
     if X.shape[0] != len(y):
         raise ValueError("Number of rows in X must match length of y")
     
-    # OLS estimate of coefficients: beta = (X^T X)^(-1) X^T y
-    beta = np.linalg.inv(X.T @ X) @ X.T @ y
+    if np.linalg.matrix_rank(X) == X.shape[1]:
+        beta = np.linalg.solve(X.T @ X, X.T @ y)  # More numerically stable
+    else:
+        beta = np.linalg.pinv(X) @ y  # Fallback for rank-deficient
     
     # Predicted values
     y_hat = X @ beta
@@ -108,10 +110,13 @@ def R_squared(X, y):
     # Total sum of squares
     ss_total = np.sum((y - np.mean(y))**2)
     
+    if ss_total == 0:
+        return 0.0
+
     # Residual sum of squares
     ss_res = np.sum((y - y_hat)**2)
     
     # R-squared
     r2 = 1 - ss_res / ss_total
     
-    return r2
+    return float(r2)
